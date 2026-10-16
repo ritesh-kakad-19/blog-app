@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Sign In</title>
+
+<!-- Bootstrap CSS -->
+<%- include('./partials/head') %>
+
+</head>
+
+<body class="bg-light">
+
+```
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4"
+         style="max-width: 420px; width: 100%;">
+
+        <div class="card-body">
+
+            <!-- Page Heading -->
+            <h2 class="text-center fw-bold mb-2">Welcome Back!</h2>
+
+            <p class="text-center text-muted mb-4">
+                Sign in to continue
+            </p>
+
+            <!-- Display error message if available -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <!-- Signin Form -->
+            <form action="/signin" method="POST">
+
+                <!-- Email Field -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        class="form-control form-control-lg"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        class="form-control form-control-lg"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100"
+                >
+                    Sign In
+                </button>
+
+            </form>
+
+            <!-- Signup Link -->
+            <p class="text-center mt-4 mb-0">
+                Don't have an account?
+                <a href="/signup" class="text-decoration-none fw-semibold">
+                    Sign Up
+                </a>
+            </p>
+
+        </div>
+    </div>
+
+</div>
+
+<%- include("partials/toast") %>
+
+<!-- Bootstrap JavaScript -->
+<%- include('./partials/scripts') %>
+
+</body>
+</html>
