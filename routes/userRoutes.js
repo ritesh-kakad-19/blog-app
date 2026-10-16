@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const { generateToken } = require("../services/auth");
 
 // Signup API
 router.get("/signup", async(req, res)=>{
@@ -83,6 +84,18 @@ router.post("/signin", async (req, res) => {
             );
         }
 
+        // Generate JWT after successful authentication
+        const token = generateToken(user);
+
+        // Store the token in an HTTP cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+            path: "/"
+        });
+
         return res.redirect("/?success=Login successful!");
 
     } catch (error) {
@@ -93,6 +106,21 @@ router.post("/signin", async (req, res) => {
             "/signin?error=Something%20went%20wrong"
         );
     }
-});
+    });
+
+
+    // Logout route
+    router.post("/logout", (req, res) => {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/"
+        });
+
+        return res.redirect("/signin");
+    });
+
+
 
 module.exports = router;
