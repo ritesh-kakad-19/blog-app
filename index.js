@@ -6,7 +6,10 @@ const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
+const blogRoutes = require('./routes/blogRoutes');
 const authenticateUser = require("./middleware/auth");
+const optionalAuth = require('./middleware/optionalAuth')
+const Blog = require("./models/Blog");
 
 // config the env file
 dotenv.config();
@@ -17,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))     // Parse form submissions from EJS
 app.use(cookieParser());    // Read cookies from incoming HTTP requests
+app.use(express.static(path.join(__dirname, "public")));    // Serve files from the public directory.
 
 
 // view engine
@@ -24,14 +28,30 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve('./views'))
 
 // routes
-app.get('/', authenticateUser, (req, res)=>{
-    res.render('home', {
-        success: req.query.success || null,
-        user: req.user
-    });
+app.get('/', optionalAuth, async (req, res)=>{
+
+  try {
+        // Fetch blogs and populate the author's name
+        const blogs = await Blog.find()
+            .populate("createdBy", "fullname")
+            .sort({ createdAt: -1 });
+
+        // Render homepage with blog data
+        res.render("home", {
+            user: req.user || null,
+            blogs,
+            success: req.query.success || null
+        });
+
+    } catch (error) {
+        console.error("Error fetching blogs:", error.message);
+
+        res.status(500).send("Unable to load blogs.");
+    }
 })
 
 app.use("/", userRoutes);
+app.use("/blog", blogRoutes);
 
 // start the app
 const startServer = async () => {

@@ -4,7 +4,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../services/auth");
 
-// Signup API
+// Signup Route
 router.get("/signup", async(req, res)=>{
     res.render('signup', {
         error: req.query.error || null
@@ -46,7 +46,7 @@ router.post("/signup", async (req, res) => {
 });
 
 
-// SIGNIN ROUTE
+// Sign In Route
 router.get("/signin", async(req, res)=>{
     res.render('signin', {
         error: req.query.error || null,
@@ -118,7 +118,7 @@ router.post("/signin", async (req, res) => {
             path: "/"
         });
 
-        return res.redirect("/signin");
+        return res.redirect("/");
     });
 
 

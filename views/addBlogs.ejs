@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Write a Blog</title>
+
+    <%- include('./partials/head') %>
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .blog-container {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .blog-container h2 {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .blog-container p {
+            color: #6c757d;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            padding: 12px;
+        }
+
+        #body {
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            padding: 11px 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Include your existing navbar -->
+    <%- include('partials/nav') %>
+
+    <div class="container">
+        <div class="blog-container">
+
+            <h2>Write Your Blog ✍️</h2>
+            <p>Share your knowledge, ideas, and experiences with others.</p>
+
+            <% if (typeof error !== "undefined" && error) { %>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/blog" method="POST" enctype="multipart/form-data">
+
+                <!-- Blog title -->
+                <div class="mb-4">
+                    <label for="title" class="form-label">
+                        Blog Title
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        placeholder="Enter your blog title"
+                        maxlength="200"
+                        required
+                    >
+                </div>
+
+                <!-- Cover image upload -->
+                <div class="mb-4">
+                    <label for="coverImage" class="form-label">
+                        Upload Cover Image
+                    </label>
+            
+                    <input type="file" class="form-control" id="coverImage" name="coverImage" accept="image/jpeg,image/png,image/webp">
+            
+                    <small class="text-muted">
+                        Supported formats: JPG, PNG, WEBP. Maximum size: 5 MB.
+                    </small>
+                </div>
+            
+                <!-- Image preview -->
+                <div class="mb-4">
+                    <img 
+                        id="imagePreview" 
+                        src="" alt="Cover preview"
+                        style="display:none; max-width:100%; max-height:250px; border-radius:10px;"
+                    >
+                </div>
+
+                <!-- Blog content -->
+                <div class="mb-4">
+                    <label for="body" class="form-label">
+                        Blog Content
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        id="body"
+                        name="body"
+                        placeholder="Start writing your blog..."
+                        required
+                    ></textarea>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-flex gap-3">
+                    <button
+                        type="submit"
+                        class="btn btn-primary submit-btn"
+                    >
+                        Publish Blog
+                    </button>
+
+                    <a href="/" class="btn btn-outline-secondary submit-btn">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+            <script>
+                // Display a preview when the user selects an image.
+                const coverImageInput = document.getElementById("coverImage");
+                const imagePreview = document.getElementById("imagePreview");
+
+                coverImageInput.addEventListener("change", function () {
+                    const file = this.files[0];
+
+                    if (!file) {
+                        imagePreview.src = "";
+                        imagePreview.style.display = "none";
+                        return;
+                    }
+
+                    // Preview only common browser-supported image formats.
+                    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                        alert("Please select a JPG, PNG, or WEBP image.");
+                        this.value = "";
+                        imagePreview.src = "";
+                        imagePreview.style.display = "none";
+                        return;
+                    }
+
+                    // Release the previous preview URL, if any.
+                    if (imagePreview.dataset.objectUrl) {
+                        URL.revokeObjectURL(imagePreview.dataset.objectUrl);
+                    }
+
+                    const previewUrl = URL.createObjectURL(file);
+
+                    imagePreview.src = previewUrl;
+                    imagePreview.dataset.objectUrl = previewUrl;
+                    imagePreview.style.display = "block";
+                    });
+            </script>
+
+        </div>
+    </div>
+
+    <%- include("partials/toast") %>
+    <!-- Bootstrap JS -->
+     <%- include('./partials/scripts') %>
+
+</body>
+</html>
