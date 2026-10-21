@@ -29,6 +29,13 @@
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
+        .blog-card-link {
+            display: block;
+            height: 100%;
+            color: inherit;
+            text-decoration: none;
+        }
+
         .blog-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
@@ -114,6 +121,8 @@
 
                         <div class="col-12 col-md-6 col-lg-4">
 
+                            <a href="/blog/read-blog/<%= blog._id %>" class="blog-card-link">
+
                             <div class="card blog-card">
 
                                 <!-- Cover image -->
@@ -164,6 +173,8 @@
                                 </div>
 
                             </div>
+
+                            </a>
 
                         </div>
 

@@ -7,6 +7,7 @@ const fs = require("fs");
 
 const Blog = require("../models/Blog");
 const authenticateUser = require("../middleware/auth");
+const optionalAuth = require('../middleware/optionalAuth')
 
 
 // 1) image upload 
@@ -157,6 +158,35 @@ router.use((err, req, res, next) => {
     }
 
     next();
+});
+
+
+
+// 3) read-blog route
+// Read a single blog
+router.get("/read-blog/:id", optionalAuth, async (req, res) => {
+    try {
+        const blogId = req.params.id;
+
+        // Find the blog using its ID
+        const blog = await Blog.findById(blogId)
+            .populate("createdBy", "fullname");
+
+        // Check if blog exists
+        if (!blog) {
+            return res.status(404).send("Blog not found");
+        }
+
+        // Render the blog details page
+        res.render("readBlog", {
+            blog,
+            user: req.user || null
+        });
+
+    } catch (error) {
+        console.error("Error reading blog:", error.message);
+        return res.status(500).send("Unable to load blog.");
+    }
 });
 
 module.exports = router;
