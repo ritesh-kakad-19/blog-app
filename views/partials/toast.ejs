@@ -1,11 +1,27 @@
-<% if (typeof success !== 'undefined' && success) { %> <div class="toast-container position-fixed top-0 end-0 p-3"> <div
-         id="successToast"
+
+
+<%
+const successMessage = typeof success !== "undefined" ? success : null;
+//const errorMessage = typeof error !== "undefined" ? error : null;
+
+const message = successMessage;
+//const isError = Boolean(errorMessage);
+
+%>
+
+<% if (message) { %> 
+    <div class="toast-container position-fixed top-0 end-0 p-3"> 
+        <div
+         id="feedbackToast"
          class="toast align-items-center text-bg-success border-0"
          role="alert"
          aria-live="assertive"
          aria-atomic="true"
-     > <div class="d-flex"> <div class="toast-body">
-<%= success %> </div>
+        > 
+        <div class="d-flex"> 
+            <div class="toast-body">
+                <%= message %>
+            </div>
             <button
                 type="button"
                 class="btn-close btn-close-white me-2 m-auto"
@@ -18,16 +34,24 @@
 
 <% } %>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toastElement = document.getElementById("successToast");
 
-        if (toastElement) {
-            const toast = new bootstrap.Toast(toastElement, {
-                delay: 3000
-            });
+<script> 
+document.addEventListener("DOMContentLoaded", function () { 
+    const toastElement = document.getElementById("feedbackToast"); 
+    if (!toastElement) return; 
 
-            toast.show();
-        }
-    });
+    // Display the toast 
+    const toast = new bootstrap.Toast(toastElement, { delay: 3000 }); 
+    toast.show(); 
+    
+    // Remove success and error query parameters without reloading 
+    const url = new URL(window.location.href); 
+    url.searchParams.delete("success"); 
+    url.searchParams.delete("error"); 
+    window.history.replaceState( 
+        {}, 
+        document.title, 
+        url.pathname + url.search + url.hash 
+    ); 
+}); 
 </script>

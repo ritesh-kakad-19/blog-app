@@ -83,17 +83,16 @@ router.post("/", authenticateUser, (req, res, next) => {
             let message = "Unable to upload the cover image.";
 
             if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
-                message = "The cover image must be 5 MB or smaller.";
-            } else if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_COUNT") {
-                message = "Please upload only one cover image.";
-            } else if (!(err instanceof multer.MulterError)) {
-                message = err.message;
-            }
+                return res.redirect(
+                    "/blog/add-new?error=" +
+                    encodeURIComponent("Image size must not exceed 5 MB.")
+                );
+            } 
 
-            return res.status(400).render("addBlogs", {
-                user: req.user,
-                error: message
-            });
+            return res.redirect(
+                "/blog/add-new?error=" +
+                encodeURIComponent(message || "Image upload failed.")
+            );
         }
 
         next();
@@ -111,7 +110,7 @@ router.post("/", authenticateUser, (req, res, next) => {
                 fs.unlink(req.file.path, () => {});
             }
             return res.redirect(
-                "/blog/new-blog?error=Please%20enter%20both%20a%20blog%20titl%20and%20content."
+                "/blog/add-new?error=Please%20enter%20both%20a%20blog%20titl%20and%20content."
             );
         }
 
@@ -129,7 +128,7 @@ router.post("/", authenticateUser, (req, res, next) => {
         });
 
         // Redirect to the homepage after publishing
-        return res.redirect("/?success=New Blog Added");
+        return res.redirect("/?success=Blog%20Added%20Successfully");
 
     } catch (error) {
 

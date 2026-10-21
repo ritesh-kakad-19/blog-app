@@ -201,6 +201,37 @@
     </main>
 
     <!-- Bootstrap JavaScript -->
+
+    <!-- <script>
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get("success");
+
+    // Convert the success code into a readable message.
+    const messages = {
+        "blog-added": "New blog added successfully!"
+    };
+
+    if (success && messages[success]) {
+        // Display the correct message.
+        const toastElement = document.getElementById("toast");
+
+        if (toastElement) {
+            toastElement.textContent = messages[success];
+            toastElement.classList.add("show");
+        }
+
+        // Remove the success parameter to prevent repeated messages.
+        params.delete("success");
+
+        const query = params.toString();
+        const newUrl = window.location.pathname +
+            (query ? `?${query}` : "") +
+            window.location.hash;
+
+        window.history.replaceState({}, document.title, newUrl);
+    }
+    </script> -->
+
     <%- include("partials/toast") %>
     <%- include('./partials/scripts') %>
 </body>
